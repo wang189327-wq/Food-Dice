@@ -1,0 +1,21 @@
+name: 问题反馈
+description: 报告一个可复现的问题
+labels: bug
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: 如何复现
+      description: 请说明操作步骤、期待结果和实际结果。不要上传私人备份或凭据。
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: 手机型号、Android版本与应用版本
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 截图或补充信息

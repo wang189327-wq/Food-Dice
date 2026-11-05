@@ -1,0 +1,14 @@
+{
+  "name": "meiwei-menu",
+  "version": "1.4.0",
+  "private": true,
+  "description": "Offline Android recipe journal, meal planner and restaurant picker",
+  "scripts": {
+    "test": "node tests/structure.cjs && node tests/regression.cjs && node tests/native-storage.cjs && node tests/production.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "acorn": "8.19.0"
+  },
+  "license": "MIT"
+}

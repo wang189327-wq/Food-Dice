@@ -1,0 +1,31 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test-and-build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npm ci
+      - run: npx playwright install chromium
+      - run: npm test
+      - name: Install Android SDK platform
+        shell: pwsh
+        run: '& "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platforms;android-35" "build-tools;35.0.0"'
+      - run: python build-android.py --debug --public-assets
+      - uses: actions/upload-artifact@v4
+        with:
+          name: meiwei-menu-debug
+          path: delivery/*-debug.apk

@@ -1,0 +1,77 @@
+# 美味餐饮 · Meiwei Menu
+
+一个离线使用的 Android 菜谱与选餐工具：记录喜欢的菜，安排午餐和晚餐，不想决定时抽一道。最低支持 Android 10。
+
+An offline-first Android recipe journal and meal planner, built with Java and native JavaScript modules. No account or server is required. Contributions are welcome.
+
+## 可以做什么
+
+- 分类保存菜品、图片、做法及每100克热量和膳食纤维。
+- 按日期安排午晚餐，搜索菜品或店铺，按重量或份数统计已知营养。
+- 在指定分类或外卖记录中随机选择，直接加入某天的计划。
+- 查看菜品详情和各分类随机推荐，裁剪正方形照片。
+- 导出、恢复本机备份；新建记录允许只填名称。
+
+包含110道家常菜和18条餐厅名称示例。营养值为粗略估算，配方、用油、馅料和熟制含水量不同都会改变结果。
+
+<img src="docs/screenshots/menu.png" width="280" alt="分类菜单"/> <img src="docs/screenshots/detail.png" width="280" alt="菜品详情"/>
+
+## 下载
+
+到 [Releases](https://github.com/wang189327-wq/meiwei-menu/releases) 下载正式公开版APK。公开版使用原创占位图；可以在应用中添加自己的菜品照片。原签名保持不变，正常覆盖安装保留数据。卸载前请导出备份。
+
+## 在浏览器中开发
+
+需要 Node.js 22+，静态预览可用 Python 3：
+
+```sh
+npm ci
+npx playwright install chromium
+python -m http.server 8080 --directory android/assets
+```
+
+打开 `http://localhost:8080`。这是浏览器独立存储，不会读写手机数据。直接双击HTML文件会遇到ES modules的本地文件限制，请使用本地HTTP服务。
+
+```sh
+npm test
+```
+
+测试覆盖菜单、详情推荐、照片裁剪、计划、外卖、旧数据保留、缺失营养、保存失败回滚，以及无业务全局变量和模块循环依赖。测试专用导入桥只由测试服务器注入，不进入APK。
+
+## 构建 Android 开发版
+
+需要 Python 3.10+、JDK 17、Android SDK Platform 35 和 Build Tools 35.0.0，设置 `JAVA_HOME`、`ANDROID_HOME`：
+
+```sh
+python build-android.py --debug --public-assets
+```
+
+开发版使用独立包名 `cn.localmenu.app.debug` 和本机生成的调试密钥，可与正式版共存，不需要维护者私钥。APK位于 `delivery/`。CI同样构建开发版。
+
+正式版仅由维护者使用原密钥生成：设置 `MENU_SIGN_DIR` 指向含 `menu-release.p12` 与 `password.txt` 的私密目录，再运行 `python build-android.py --public-assets`。密钥永不提交。本项目也兼容历史离线工具目录，可用 `MENU_TOOLCHAIN` 指定。
+
+版本修改集中在 `version.json`。公开正式版检查GitHub上的更新清单，下载后校验SHA-256、包名、版本和证书；安卓仍要求用户确认安装。
+
+## 代码在哪里
+
+- `android/src/cn/localmenu/app/`：Android生命周期、存储桥、白名单资源路由和更新安装。
+- `android/assets/js/seed-data.js`：预置菜谱、餐厅和做法。
+- `store.js`：唯一的数据写入入口、验证、失败回滚和订阅；保留历史备份格式。
+- `catalog.js` / `catalog-view.js`：菜单和详情交互 / 显示模板。
+- `planner.js`、`draw.js`、`takeout.js`、`photos.js`：各自的业务功能。
+- `data.js`、`validation.js`：公共显示工具和字段校验。
+- `app.js`：启动、渲染订阅和返回键；不把业务状态挂在 `window` 上。
+
+详见 [架构说明](docs/architecture.md) 和 [贡献指南](CONTRIBUTING.md)。
+
+## 图片与隐私
+
+仓库只包含为本项目生成的封面/图标和原创SVG占位图。早期本地版本使用过的网络菜图、餐厅照片没有放入公开仓库或公开APK。仅记录来源不等于获得再分发许可。
+
+有权使用的本地图片可放进 `android/assets/photos/`，命名与预置数据匹配；默认被Git忽略。不要提交私人菜谱备份、照片、签名文件或访问凭据。用户数据只保存在当前设备，不做云端同步。
+
+## 项目状态
+
+这是个人项目的首个公开版本，已完成自动化行为测试和APK构建/签名检查；尚无完整实体安卓机型测试报告。欢迎提交手机型号、系统版本和可复现步骤，帮助补齐兼容性。
+
+代码采用 [MIT](LICENSE) 许可。第三方依赖遵循各自许可证；图标和占位素材的说明见 [素材说明](docs/assets.md)。

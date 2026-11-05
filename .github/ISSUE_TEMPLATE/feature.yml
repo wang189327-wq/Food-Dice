@@ -1,0 +1,13 @@
+name: 改进建议
+description: 讨论一个使用场景或小范围改进
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: 想解决的具体问题
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: 建议方案与可能的取舍

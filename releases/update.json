@@ -1,0 +1,7 @@
+{
+  "versionCode": 10401,
+  "versionName": "1.4",
+  "apkUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.4.0/menu-1.4-public.apk",
+  "sha256": "c79666a17b1a949fed7581ac6f8ac48857a1082a7ddfff5023011ee1bfb66345",
+  "notes": "ES模块隔离状态、精简详情渲染、可复现开发构建及开源文档；本地数据保持兼容。"
+}
