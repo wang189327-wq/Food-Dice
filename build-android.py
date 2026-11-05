@@ -157,7 +157,7 @@ def build(debug=False, public_assets=False):
             (publish / 'update.json').write_text(json.dumps({'versionCode': VERSION['code'], 'versionName': VERSION['name'],
                 'apkUrl': VERSION.get('releaseAssetBaseUrl', VERSION['updateBaseUrl']) + '/' + remote_name, 'sha256': digest,
                 'notes': VERSION['notes']}, ensure_ascii=False, indent=2), encoding='utf-8')
-        print('APK_READY', output_name, digest)
+        print('APK_READY', ascii(output_name), digest)
 
 
 if __name__ == '__main__':
