@@ -4,7 +4,7 @@
 
 An offline-first Android recipe journal and meal planner, built with Java and native JavaScript modules. No account or server is required. Contributions are welcome.
 
-![Version](https://img.shields.io/badge/version-1.0-blue) ![Platform](https://img.shields.io/badge/Android-10%2B-green) ![Offline](https://img.shields.io/badge/%E7%A6%BB%E7%BA%BF%E5%8F%AF%E7%94%A8-%E6%97%A0%E9%9C%80%E8%B4%A6%E5%8F%B7-brightgreen) ![License](https://img.shields.io/badge/license-MIT-orange)
+![Version](https://img.shields.io/badge/version-1.0.1-blue) ![Platform](https://img.shields.io/badge/Android-10%2B-green) ![Offline](https://img.shields.io/badge/%E7%A6%BB%E7%BA%BF%E5%8F%AF%E7%94%A8-%E6%97%A0%E9%9C%80%E8%B4%A6%E5%8F%B7-brightgreen) ![License](https://img.shields.io/badge/license-MIT-orange)
 
 <p align="center">
   <a href="https://wang189327-wq.github.io/Food-Dice/android/assets/"><img src="https://img.shields.io/badge/%E2%96%B6%20%E5%9C%A8%E7%BA%BF%E8%AF%95%E8%BF%90%E8%A1%8C-%E7%82%B9%E5%87%BB%E7%9B%B4%E6%8E%A5%E4%BD%93%E9%AA%8C-2ea44f?style=for-the-badge" alt="在线试运行" height="34"/></a>
@@ -29,7 +29,7 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 
 ## 下载
 
-到 [Releases](https://github.com/wang189327-wq/Food-Dice/releases) 下载正式公开版APK。公开版已包含全部预置菜品与餐厅示意图，也可添加自己的菜品照片。当前版本为 **1.0（版本码1）**，原签名保持不变。后续版本递增后可正常覆盖升级。
+到 [Releases](https://github.com/wang189327-wq/Food-Dice/releases) 下载正式公开版APK。公开版已包含全部预置菜品与餐厅示意图，也可添加自己的菜品照片。当前版本为 **1.0.1（版本码2）**，签名保持不变，已装 1.0 的设备可直接覆盖升级。
 
 | 项目 | 说明 |
 | :--- | :--- |

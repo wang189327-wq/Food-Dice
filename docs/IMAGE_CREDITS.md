@@ -801,8 +801,8 @@
 - 文件：`android/assets/photos/app-cover.jpg`
 - 图片：原创封面
 - 作者：美味餐饮项目维护者（封面为AI辅助插画）
-- 来源：[原创封面](https://github.com/wang189327-wq/meiwei-menu)
-- 许可：[MIT](https://github.com/wang189327-wq/meiwei-menu/blob/main/LICENSE)
+- 来源：[原创封面](https://github.com/wang189327-wq/Food-Dice)
+- 许可：[MIT](https://github.com/wang189327-wq/Food-Dice/blob/main/LICENSE)
 - 修改：本项目原创素材
 
 ## 原创占位图
@@ -810,6 +810,6 @@
 - 文件：`android/assets/photos/placeholder.svg`
 - 图片：原创占位图
 - 作者：美味餐饮项目维护者（封面为AI辅助插画）
-- 来源：[原创占位图](https://github.com/wang189327-wq/meiwei-menu)
-- 许可：[MIT](https://github.com/wang189327-wq/meiwei-menu/blob/main/LICENSE)
+- 来源：[原创占位图](https://github.com/wang189327-wq/Food-Dice)
+- 许可：[MIT](https://github.com/wang189327-wq/Food-Dice/blob/main/LICENSE)
 - 修改：本项目原创素材

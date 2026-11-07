@@ -99,8 +99,8 @@ public class MainActivity extends Activity {
             String host = uri.getHost();
             boolean allowed = "commons.wikimedia.org".equals(host) || "creativecommons.org".equals(host)
                 || ("github.com".equals(host) && uri.getPath() != null
-                    && (uri.getPath().equals("/wang189327-wq/meiwei-menu")
-                        || uri.getPath().startsWith("/wang189327-wq/meiwei-menu/")));
+                    && (uri.getPath().equals("/wang189327-wq/Food-Dice")
+                        || uri.getPath().startsWith("/wang189327-wq/Food-Dice/")));
             if (!"https".equals(uri.getScheme()) || uri.getUserInfo() != null
                 || (uri.getPort() != -1 && uri.getPort() != 443) || !allowed) return;
             runOnUiThread(() -> {

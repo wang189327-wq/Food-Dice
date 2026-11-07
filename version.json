@@ -1,10 +1,10 @@
 {
-  "name": "1.0",
-  "code": 1,
+  "name": "1.0.1",
+  "code": 2,
   "minimumSdk": 29,
   "targetSdk": 35,
-  "updateBaseUrl": "https://raw.githubusercontent.com/wang189327-wq/meiwei-menu/main/releases",
-  "notes": "开源最终版：70道预置菜、18家店铺示意图，全部配图附开放许可来源；个人完整版保留110道菜。",
-  "releaseAssetBaseUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.0.0",
+  "updateBaseUrl": "https://raw.githubusercontent.com/wang189327-wq/Food-Dice/main/releases",
+  "notes": "1.0.1：仓库更名为 Food-Dice，更新地址与图片来源链接同步迁移；浏览器版配图改用相对路径。功能与 1.0 一致。",
+  "releaseAssetBaseUrl": "https://github.com/wang189327-wq/Food-Dice/releases/download/v1.0.1",
   "edition": "public"
 }
