@@ -38,6 +38,7 @@ def find_toolchain():
 
 
 def build(debug=False, public_assets=False):
+    public_assets = public_assets or VERSION.get('edition') == 'public'
     _, jdk, build_tools, platform = find_toolchain()
     suffix = '.exe' if os.name == 'nt' else ''
     env = {**os.environ, 'JAVA_HOME': str(jdk), 'PATH': str(jdk / 'bin') + os.pathsep + os.environ['PATH']}
@@ -80,8 +81,15 @@ def build(debug=False, public_assets=False):
         assets = work / 'assets'
         shutil.copytree(PROJECT / 'assets', assets, ignore=shutil.ignore_patterns('photos'))
         (assets / 'photos').mkdir()
+        approved = {}
+        if public_assets:
+            credits = json.loads((ROOT / 'docs/image-attributions.json').read_text(encoding='utf-8'))
+            approved = {Path(c['file']).name: c['sha256'] for c in credits
+                        if c['file'].startswith('android/assets/photos/')}
         for image in (PROJECT / 'assets/photos').iterdir():
-            if image.is_file() and (not public_assets or image.name in {'app-cover.jpg', 'placeholder.svg'}):
+            if image.is_file() and (not public_assets or image.name in approved):
+                if public_assets and hashlib.sha256(image.read_bytes()).hexdigest() != approved[image.name]:
+                    raise ValueError('Licensed asset changed without an updated attribution: ' + image.name)
                 shutil.copy2(image, assets / 'photos' / image.name)
         metadata = {'name': VERSION['name'], 'code': VERSION['code'],
                     'bundledPhotos': sorted(p.name for p in (assets / 'photos').iterdir())}
@@ -162,6 +170,6 @@ def build(debug=False, public_assets=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--debug', action='store_true', help='Use a separate package and local debug key')
-    parser.add_argument('--public-assets', action='store_true', help='Exclude third-party photos; use placeholders')
+    parser.add_argument('--public-assets', action='store_true', help='Bundle only photos verified by the attribution manifest')
     arguments = parser.parse_args()
     build(arguments.debug, arguments.public_assets)

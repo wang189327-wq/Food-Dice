@@ -44,14 +44,14 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
     const load = () => page.evaluate(() => JSON.parse(localStorage.getItem('menu-data')));
     let data = await load();
     assert(data, JSON.stringify(errors));
-    assert.equal(data.dishes.length, 110);
+    assert.equal(data.dishes.length, 70);
     assert.equal(data.takeouts.length, 18);
     assert(data.takeouts.every(x => x.dish === '' && x.price === null && x.calories === null && x.image));
     assert(data.dishes.every(d => d.recipe));
-    assert.equal(data.dishes.filter(d => d.category === '主食').length, 9);
+    assert.equal(data.dishes.filter(d => d.category === '主食').length, 8);
     assert.equal(data.dishes.find(d => d.name === '煎牛排').category, '高蛋白');
     assert.equal(await page.locator('#dishList .menu-group').count(), 6);
-    assert.equal(await page.locator('#dishList .dish').count(), 110);
+    assert.equal(await page.locator('#dishList .dish').count(), 70);
     assert.equal(await page.locator('#dishList [data-edit]').count(), 0);
     const top = await page.locator('#newDish').boundingBox();
     assert(top.y >= 0 && top.y < 18);
@@ -70,7 +70,7 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
         i.src = displayImage(src);
       })));
     });
-    assert.equal(pics.length, 129);
+    assert.equal(pics.length, 89);
     assert(pics.every(Boolean));
     await page.screenshot({ path: root + '/菜谱预览.png' });
     await page.locator('#categorySidebar button').filter({ hasText: '主食' }).click();
@@ -91,7 +91,12 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
     const firstRecs = await page.locator('#dishDetail .recommend-card').evaluateAll(cs => cs.map(c => c.dataset.openDish));
     await page.locator('#refreshRecommendations').click();
     const nextRecs = await page.locator('#dishDetail .recommend-card').evaluateAll(cs => cs.map(c => c.dataset.openDish));
-    assert(nextRecs.every((id, n) => id !== firstRecs[n]));
+    const choices = Object.fromEntries(data.categories.map(c => [c, data.dishes.filter(d => d.category === c && d.id !== first).map(d => d.id)]));
+    for (let n = 0; n < nextRecs.length; n++) {
+      const category = data.dishes.find(d => d.id === firstRecs[n]).category;
+      if (choices[category].length > 1) assert.notEqual(nextRecs[n], firstRecs[n]);
+      else assert.equal(nextRecs[n], firstRecs[n]);
+    }
     await page.screenshot({ path: root + '/菜品详情预览.png' });
     await page.locator('#dishDetail .recommend-card').first().click();
     assert.notEqual(await page.locator('#detailBody').getAttribute('data-dish-id'), first);
@@ -203,13 +208,13 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
     await page.evaluate(x => localStorage.setItem('menu-data', JSON.stringify(x)), old);
     await page.reload();
     data = await load();
-    assert.equal(data.dishes.length, 11);
+    assert.equal(data.dishes.length, 10);
     assert.equal(data.dishes.find(d => d.id === 'kept').calories, 999);
     assert.deepEqual(data.plans, old.plans);
     assert.equal(data.takeouts.length, 18);
     assert.equal(data.takeouts.find(t => t.id === 'kfc').dish, '用户原推荐');
     await page.reload();
-    assert.equal((await load()).dishes.length, 11);
+    assert.equal((await load()).dishes.length, 10);
     assert.equal((await load()).takeouts.length, 18);
     assert.deepEqual(errors, []);
     await page.setViewportSize({
@@ -219,10 +224,10 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     const report = {
       passed: true,
-      presetDishes: 110,
-      staples: 9,
+      presetDishes: 70,
+      staples: 8,
       presetRestaurants: 18,
-      imageReferences: 129,
+      imageReferences: 89,
       checks: [
         '连续六分类菜单与侧栏导航',
         '详情大图及营养做法',
@@ -231,7 +236,7 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
         '详情编辑入口',
         '仅名称必填且空值不作零',
         '18家餐厅只写名称和图',
-        '9种主食及煎牛排',
+        '8种主食及煎牛排',
         '纯外卖抽签',
         '抽签日期加入指定日餐次',
         '添加计划关键词搜索',

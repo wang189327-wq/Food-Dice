@@ -1,0 +1,8 @@
+const fs=require('fs'),path=require('path'),assert=require('assert'),crypto=require('crypto');
+(async()=>{const root=path.dirname(__dirname),credits=JSON.parse(fs.readFileSync(path.join(root,'docs/image-attributions.json'),'utf8'));
+const seen=new Set();assert.equal(credits.length,90);
+for(const c of credits){assert(!seen.has(c.file));seen.add(c.file);assert(c.file.startsWith('android/assets/photos/'));assert(c.name&&c.title&&c.author&&c.sourcePage&&c.licenseUrl&&c.changes);if(c.kind!=='original')assert(/^https:\/\/creativecommons\.org\/(licenses\/(by|by-sa)\/[1-4]\.0|publicdomain\/(zero|mark)\/1\.0)(\/|$)/.test(c.licenseUrl));assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,c.file))).digest('hex'),c.sha256)}
+const bundled=fs.readdirSync(path.join(root,'android/assets/photos')).map(f=>'android/assets/photos/'+f);assert.equal(bundled.length,90);assert(bundled.every(f=>seen.has(f)));
+const {pathToFileURL}=require('url');const seed=await import(pathToFileURL(path.join(root,'android/assets/js/seed-data.js')));assert.equal(seed.PRESET_DISHES.length,70);assert.equal(seed.PRESET_SHOPS.length,18);for(const item of [...seed.PRESET_DISHES,...seed.PRESET_SHOPS]){const filename=item.image?.split('/').pop()||item.id+'.jpg';assert(seen.has('android/assets/photos/'+filename),item.name||item.shop)}
+const ui=await import(pathToFileURL(path.join(root,'android/assets/js/asset-credits.js')));assert.deepEqual(ui.PHOTO_CREDITS,credits);
+console.log('Licensed assets passed: 70 dishes, 18 shop illustrations, 90 bundled files, complete attribution and SHA-256.');})().catch(e=>{console.error(e);process.exitCode=1});

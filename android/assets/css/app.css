@@ -810,3 +810,12 @@ dialog {
   margin-bottom: 18px;
 }
 
+
+.image-credit {
+  padding: 12px 0;
+  border-bottom: 1px solid #e8dfcc;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.image-credit h3 { font-size: 15px; }
+.image-credit a { color: #176b78; }

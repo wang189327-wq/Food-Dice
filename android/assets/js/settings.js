@@ -1,4 +1,5 @@
-import { $, toast } from './data.js';
+import { PHOTO_CREDITS } from './asset-credits.js';
+import { $, esc, toast } from './data.js';
 import { data, restoreBackup } from './store.js';
 import { validate } from './validation.js';
 
@@ -46,5 +47,18 @@ $('restore').onclick = () => {
     }
   } catch (e) {
     toast('无法恢复：' + e.message);
+  }
+};
+
+$('showImageCredits').onclick = () => {
+  $('imageCreditsBody').innerHTML = PHOTO_CREDITS.map(c => `<section class="image-credit"><h3>${esc(c.name)}</h3><p>${esc(c.title)}<br>作者：${esc(c.author)}<br>许可：<a href="${esc(c.licenseUrl)}" target="_blank" rel="noopener">${esc(c.license)}</a><br>${esc(c.changes)}</p><a href="${esc(c.sourcePage)}" target="_blank" rel="noopener">查看原图与来源</a></section>`).join('');
+  $('imageCredits').showModal();
+};
+$('imageCreditsBody').onclick = event => {
+  const link = event.target.closest('a');
+  if (link && window.Native) {
+    event.preventDefault();
+    if (typeof Native.openImageCredit === 'function') Native.openImageCredit(link.href);
+    else toast('请在浏览器中查看图片来源');
   }
 };

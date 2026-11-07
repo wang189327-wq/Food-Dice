@@ -4,7 +4,7 @@
   "private": true,
   "description": "Offline Android recipe journal, meal planner and restaurant picker",
   "scripts": {
-    "test": "node tests/structure.cjs && node tests/regression.cjs && node tests/native-storage.cjs && node tests/production.cjs"
+    "test": "node tests/assets.cjs && node tests/structure.cjs && node tests/regression.cjs && node tests/native-storage.cjs && node tests/production.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",

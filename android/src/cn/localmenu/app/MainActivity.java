@@ -94,6 +94,22 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public String updateUrl() { return updater.getUrl(); }
         @JavascriptInterface public void setUpdateUrl(String value) { updater.setUrl(value); }
+        @JavascriptInterface public void openImageCredit(String value) {
+            Uri uri = Uri.parse(value);
+            String host = uri.getHost();
+            boolean allowed = "commons.wikimedia.org".equals(host) || "creativecommons.org".equals(host)
+                || ("github.com".equals(host) && uri.getPath() != null
+                    && (uri.getPath().equals("/wang189327-wq/meiwei-menu")
+                        || uri.getPath().startsWith("/wang189327-wq/meiwei-menu/")));
+            if (!"https".equals(uri.getScheme()) || uri.getUserInfo() != null
+                || (uri.getPort() != -1 && uri.getPort() != 443) || !allowed) return;
+            runOnUiThread(() -> {
+                try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
+                catch (Exception error) { new AlertDialog.Builder(MainActivity.this)
+                    .setMessage("没有可用的浏览器，无法打开图片来源。")
+                    .setPositiveButton("知道了", null).show(); }
+            });
+        }
         @JavascriptInterface public void check() { updater.check(); }
         @JavascriptInterface public void install() { updater.install(); }
     }

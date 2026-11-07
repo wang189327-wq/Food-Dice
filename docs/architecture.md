@@ -22,4 +22,8 @@ flowchart TD
 
 Android的MainActivity负责生命周期、系统边距、相册和数据桥；LocalWebClient只服务允许的JS、CSS、图片；AppUpdater负责HTTPS更新、最多5次安全重定向、哈希及签名校验和安装缓存清理。
 
-构建从version.json生成Java常量和浏览器版本元数据，每次使用独立临时目录。公开包与本地素材包使用相同业务代码；公开包仅带允许分发的素材，缺图由本地SVG代替。正式包与开发包的包名和签名不同，不会互相覆盖。
+构建从version.json生成Java常量和浏览器版本元数据，每次使用独立临时目录。公开版预置70道菜和18条餐厅记录，所有预置图片由许可清单及哈希验证后打包。个人本地完整版单独封存，仍保留110道菜和原图，不随仓库公开；两版保留相同的核心功能与备份格式。正式包与开发包的包名和签名不同，不会互相覆盖。
+
+图片署名以docs/image-attributions.json为唯一维护入口，scripts/sync-image-credits.py生成asset-credits模块和Markdown清单。settings按需展示署名；原生桥只允许用系统浏览器打开明确列出的HTTPS来源及许可证站点。
+
+version.json中的edition=public使根目录构建默认产出-public包，防止覆盖保留的本地完整包。

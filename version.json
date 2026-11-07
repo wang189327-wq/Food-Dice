@@ -4,6 +4,7 @@
   "minimumSdk": 29,
   "targetSdk": 35,
   "updateBaseUrl": "https://raw.githubusercontent.com/wang189327-wq/meiwei-menu/main/releases",
-  "notes": "版本编号重置为1.0（版本码1），保留离线菜谱、计划、抽签和备份功能。",
-  "releaseAssetBaseUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.0.0"
+  "notes": "开源最终版：70道预置菜、18家店铺示意图，全部配图附开放许可来源；个人完整版保留110道菜。",
+  "releaseAssetBaseUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.0.0",
+  "edition": "public"
 }

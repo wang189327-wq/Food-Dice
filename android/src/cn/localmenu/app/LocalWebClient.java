@@ -21,7 +21,7 @@ final class LocalWebClient extends WebViewClient {
         String mime = null;
         if (path != null) {
             if (path.matches("/photos/(?:preset-20261020-[0-9]{3}|staple-20261020-[0-9]{2}|store-20261020-[0-9]{2}|app-cover)\\.jpg")) mime = "image/jpeg";
-            else if (path.matches("/js/(?:version|data|seed-data|validation|store|catalog|catalog-view|planner|draw|takeout|photos|settings|app)\\.js")) mime = "application/javascript";
+            else if (path.matches("/js/(?:version|data|seed-data|asset-credits|validation|store|catalog|catalog-view|planner|draw|takeout|photos|settings|app)\\.js")) mime = "application/javascript";
             else if ("/photos/placeholder.svg".equals(path)) mime = "image/svg+xml";
             else if ("/css/app.css".equals(path)) mime = "text/css";
         }

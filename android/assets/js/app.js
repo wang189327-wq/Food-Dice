@@ -31,7 +31,8 @@ window.handleBack = () => {
       'dishDialog',
       'takeoutDialog',
       'mealDialog',
-      'categoryDialog'
+      'categoryDialog',
+      'imageCredits'
     ])
     if ($(id).open) {
       $(id).close();

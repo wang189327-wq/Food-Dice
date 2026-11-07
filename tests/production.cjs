@@ -28,7 +28,7 @@ const {chromium} = require('playwright'), fs = require('fs'), path = require('pa
       });
     });
     await page.goto('http://127.0.0.1:' + server.address().port);
-    await page.waitForFunction(() => document.querySelectorAll('#dishList .dish').length === 110);
+    await page.waitForFunction(() => document.querySelectorAll('#dishList .dish').length === 70);
     await page.screenshot({path: path.join(root, 'docs/screenshots/menu.png')});
     await page.locator('#dishList .dish').first().click();
     await page.screenshot({path: path.join(root, 'docs/screenshots/detail.png')});
@@ -52,7 +52,7 @@ const {chromium} = require('playwright'), fs = require('fs'), path = require('pa
         fallback: media.displayImage('https://menu.local/photos/not-in-build.jpg')
       };
     });
-    assert.equal(result.dishes, 110);
+    assert.equal(result.dishes, 70);
     assert.equal(result.shops, 18);
     assert.deepEqual(result.leaked, []);
     assert(result.fallback.endsWith('/placeholder.svg'));
