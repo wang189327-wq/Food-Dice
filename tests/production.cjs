@@ -3,11 +3,14 @@ const {chromium} = require('playwright'), fs = require('fs'), path = require('pa
   const root = path.dirname(__dirname), assets = path.join(root, 'android/assets');
   const server = http.createServer((q, r) => {
     const p = new URL(q.url, 'http://localhost').pathname.slice(1) || 'index.html';
-    if (!/^(index\.html|js\/[a-z-]+\.js|css\/app\.css)$/.test(p)) {
+    if (!/^(index\.html|js\/[a-z-]+\.js|css\/app\.css|photos\/[\w.-]+)$/.test(p)) {
       r.writeHead(404);
       return r.end();
     }
-    r.setHeader('Content-Type', p.endsWith('.js') ? 'application/javascript' : p.endsWith('.css') ? 'text/css' : 'text/html;charset=utf-8');
+    r.setHeader('Content-Type', p.endsWith('.js') ? 'application/javascript'
+      : p.endsWith('.css') ? 'text/css'
+      : p.endsWith('.svg') ? 'image/svg+xml'
+      : p.endsWith('.jpg') || p.endsWith('.jpeg') ? 'image/jpeg' : 'text/html;charset=utf-8');
     r.end(fs.readFileSync(path.join(assets, p)));
   }).listen(0, '127.0.0.1');
   await new Promise(r => server.on('listening', r));

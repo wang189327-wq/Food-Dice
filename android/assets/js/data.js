@@ -25,12 +25,17 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 
 const dateString = d => `${ d.getFullYear() }-${ String(d.getMonth() + 1).padStart(2, '0') }-${ String(d.getDate()).padStart(2, '0') }`;
 const today = () => dateString(new Date()), fmt = n => n == null ? '未填写' : Number(n.toFixed(1)).toString();
 const options = (items, selected = '') => items.map(c => `<option value="${ esc(c) }" ${ c === selected ? 'selected' : '' }>${ esc(c) }</option>`).join('');
+function toLocalPhoto(src) {
+  const prefix = 'https://menu.local/photos/';
+  return src.startsWith(prefix) ? 'photos/' + src.slice(prefix.length) : src;
+}
 function displayImage(src) {
   if (!src || src.startsWith('data:')) return src;
-  if (!APP_VERSION.bundledPhotos) return src;
+  const local = toLocalPhoto(src);
+  if (!APP_VERSION.bundledPhotos) return local;
   const filename = src.startsWith('https://menu.local/photos/') ? src.split('/').pop() : null;
   return filename && APP_VERSION.bundledPhotos.includes(filename)
-    ? src : 'https://menu.local/photos/placeholder.svg';
+    ? local : 'photos/placeholder.svg';
 }
 function photoTag(src, name, cls = 'dish-image') {
   src = displayImage(src);

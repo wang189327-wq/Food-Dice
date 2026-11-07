@@ -11,11 +11,14 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
       return r.end(html);
     }
     const relative = u.pathname.slice(1);
-    if (!/^(js\/[a-z-]+\.js|css\/app\.css)$/.test(relative)) {
+    if (!/^(js\/[a-z-]+\.js|css\/app\.css|photos\/[\w.-]+)$/.test(relative)) {
       r.writeHead(404);
       return r.end();
     }
-    r.setHeader('Content-Type', relative.endsWith('.js') ? 'application/javascript;charset=utf-8' : 'text/css;charset=utf-8');
+    const type = relative.endsWith('.js') ? 'application/javascript;charset=utf-8'
+      : relative.endsWith('.css') ? 'text/css;charset=utf-8'
+      : relative.endsWith('.svg') ? 'image/svg+xml' : 'image/jpeg';
+    r.setHeader('Content-Type', type);
     r.end(fs.readFileSync(path.join(root, 'android/assets', relative)));
   }).listen(0, '127.0.0.1');
   await new Promise(r => server.on('listening', r));
