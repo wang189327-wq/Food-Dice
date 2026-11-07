@@ -1,4 +1,4 @@
-# 美味餐饮 · Meiwei Menu
+# Food Dice · 美味餐饮
 
 **一个离线使用的 Android 菜谱与选餐工具：记录喜欢的菜，安排午餐和晚餐，不想决定时抽一道。**
 
@@ -40,7 +40,7 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 
 ## 在浏览器中试运行
 
-无需安装 APK，即可在浏览器中体验完整功能：直接访问 [在线试运行](https://wang189327-wq.github.io/Food-Dice/android/assets/)（由 GitHub Pages 托管，数据存放在浏览器的独立存储中，不会读写手机数据）。
+无需安装 APK，即可在浏览器中体验主要功能：直接访问 [在线试运行](https://wang189327-wq.github.io/Food-Dice/android/assets/)（由 GitHub Pages 托管，数据存放在浏览器的独立存储中，不会读写手机数据）。更新检测与安装需在安卓应用内完成。
 
 想在本地运行，需要 Node.js 22+，静态预览可用 Python 3：
 

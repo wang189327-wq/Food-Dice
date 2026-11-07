@@ -1,9 +1,21 @@
 import { chromium } from 'playwright';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-const BASE = 'http://127.0.0.1:8080/';
-const DIR = 'docs/screenshots/_frames';
+// 需先启动静态服务：python -m http.server 8080 --directory android/assets
+const BASE = process.env.DEMO_BASE || 'http://127.0.0.1:8080/';
+const DIR = fileURLToPath(new URL('../docs/screenshots/_frames', import.meta.url));
 fs.mkdirSync(DIR, { recursive: true });
+
+// 服务未启动时给出可执行的指引，而不是 Playwright 的晦涩报错
+try {
+  const res = await fetch(BASE, { signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+} catch (error) {
+  console.error(`无法访问 ${BASE}（${error.message}）`);
+  console.error('请先在仓库根目录运行：python -m http.server 8080 --directory android/assets');
+  process.exit(1);
+}
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
