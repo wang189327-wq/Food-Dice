@@ -4,7 +4,7 @@
   "minimumSdk": 29,
   "targetSdk": 35,
   "updateBaseUrl": "https://raw.githubusercontent.com/wang189327-wq/Food-Dice/main/releases",
-  "notes": "1.0.1：仓库更名为 Food-Dice，更新地址与来源链接同步迁移；修复旧更新地址不迁移、备份体积无上限、下载无总时限且不可取消等问题。",
+  "notes": "1.0.1：仓库更名为 Food-Dice，更新地址与来源链接同步迁移；修复备份体积无上限、下载无总时限且不可取消等问题。",
   "releaseAssetBaseUrl": "https://github.com/wang189327-wq/Food-Dice/releases/download/v1.0.1",
   "edition": "public"
 }

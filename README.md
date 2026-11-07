@@ -80,6 +80,12 @@ python build-android.py --debug --public-assets
 
 版本修改集中在 `version.json`。公开正式版检查GitHub上的更新清单，下载后校验SHA-256、包名、版本和证书；安卓仍要求用户确认安装。
 
+### 可复现构建
+
+同源码重复构建的APK哈希不同：zip条目时间戳、对齐结果和签名块每次都有差异。这是已知限制，不影响安装，也不影响更新校验——更新比对的是发布清单里记录的SHA-256，不是"重新构建能否对上"。
+
+要确认某个APK出自本仓库，请看签名证书：证书SHA-256指纹固定为 `38F9C5A9CFAE9133981C084363FD3F001CA2ED9C8446A0F40B2A7E1CC2E8AF26`（`apksigner verify --print-certs` 可查），再与发布页的 `SHA256SUMS` 对照。
+
 ## 目录结构
 
 ```text

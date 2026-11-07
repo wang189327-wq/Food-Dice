@@ -27,5 +27,5 @@ jobs:
       - run: python build-android.py --debug --public-assets
       - uses: actions/upload-artifact@v4
         with:
-          name: meiwei-menu-debug
+          name: food-dice-debug
           path: delivery/*-debug.apk

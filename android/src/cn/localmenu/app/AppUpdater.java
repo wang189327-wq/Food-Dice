@@ -29,9 +29,6 @@ final class AppUpdater {
     private volatile JSONObject latest;
     private boolean pendingInstall;
     private static final long DOWNLOAD_LIMIT_MS = 180000;
-    private static final String[] LEGACY_URLS = {
-        "https://raw.githubusercontent.com/wang189327-wq/meiwei-menu/main/releases/update.json"
-    };
 
     AppUpdater(Activity activity, SharedPreferences preferences, Status status) {
         this.activity = activity;
@@ -46,15 +43,10 @@ final class AppUpdater {
 
     String getUrl() {
         String saved = preferences.getString("updateUrl", "").trim();
-        for (String legacy : LEGACY_URLS)
-            if (legacy.equalsIgnoreCase(saved)) return BuildInfo.UPDATE_URL;
         return saved.isEmpty() ? BuildInfo.UPDATE_URL : saved;
     }
     void setUrl(String value) {
-        String url = value.trim();
-        for (String legacy : LEGACY_URLS)
-            if (legacy.equalsIgnoreCase(url)) url = BuildInfo.UPDATE_URL;
-        preferences.edit().putString("updateUrl", url).apply();
+        preferences.edit().putString("updateUrl", value.trim()).apply();
         latest = null;
     }
     void resetUrl() { preferences.edit().remove("updateUrl").apply(); latest = null; }
