@@ -6,13 +6,9 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 
 ![Version](https://img.shields.io/badge/version-1.0-blue) ![Platform](https://img.shields.io/badge/Android-10%2B-green) ![Offline](https://img.shields.io/badge/%E7%A6%BB%E7%BA%BF%E5%8F%AF%E7%94%A8-%E6%97%A0%E9%9C%80%E8%B4%A6%E5%8F%B7-brightgreen) ![License](https://img.shields.io/badge/license-MIT-orange)
 
-## 应用一览
-
 <p align="center">
-  <a href="docs/screenshots/menu.png"><img src="docs/screenshots/menu.png" width="290" alt="分类菜谱：小炒菜列表与每100克营养估算"/></a>
-  <a href="docs/screenshots/detail.png"><img src="docs/screenshots/detail.png" width="290" alt="菜品详情：做法步骤与营养信息"/></a>
+  <a href="https://wang189327-wq.github.io/Food-Dice/android/assets/"><img src="https://img.shields.io/badge/%E2%96%B6%20%E5%9C%A8%E7%BA%BF%E8%AF%95%E8%BF%90%E8%A1%8C-%E7%82%B9%E5%87%BB%E7%9B%B4%E6%8E%A5%E4%BD%93%E9%AA%8C-2ea44f?style=for-the-badge" alt="在线试运行" height="34"/></a>
 </p>
-<p align="center"><sub>左：分类菜谱与营养估算 ｜ 右：菜品详情与做法步骤</sub></p>
 
 ## 功能一览
 
@@ -39,7 +35,9 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 
 ## 在浏览器中试运行
 
-无需安装 APK，即可在浏览器中体验完整功能。需要 Node.js 22+，静态预览可用 Python 3：
+无需安装 APK，即可在浏览器中体验完整功能：直接访问 [在线试运行](https://wang189327-wq.github.io/Food-Dice/android/assets/)（由 GitHub Pages 托管，数据存放在浏览器的独立存储中，不会读写手机数据）。
+
+想在本地运行，需要 Node.js 22+，静态预览可用 Python 3：
 
 ```sh
 npm ci
