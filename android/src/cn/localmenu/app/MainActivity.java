@@ -51,7 +51,9 @@ public class MainActivity extends Activity {
                 view.setPadding(insets.getSystemWindowInsetLeft(), Math.max(insets.getSystemWindowInsetTop(), cutout),
                     insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
             }
-            return insets;
+            // The container has already applied system insets; do not apply them again in WebView.
+            return Build.VERSION.SDK_INT >= 30 ? WindowInsets.CONSUMED
+                : insets.replaceSystemWindowInsets(0, 0, 0, 0);
         });
         WebSettings settings = web.getSettings();
         settings.setJavaScriptEnabled(true);

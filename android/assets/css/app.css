@@ -274,11 +274,11 @@ input[type=checkbox] {
 }
 
 body {
-  padding-bottom: calc(var(--navigation-height) + 17px + env(safe-area-inset-bottom));
+  padding-bottom: calc(var(--navigation-height) + env(safe-area-inset-bottom));
 }
 
 main {
-  padding: 16px 12px;
+  padding: 16px 12px 0;
   max-width: 850px;
 }
 
@@ -341,7 +341,7 @@ h2 {
 .catalog-shell {
   display: flex;
   gap: 12px;
-  min-height: 270px;
+  min-height: 0;
 }
 
 .catalog-content {
@@ -601,8 +601,18 @@ input,select,textarea {
   position: relative;
 }
 
+#dishes.active {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--navigation-height) - env(safe-area-inset-bottom) - 6px);
+}
+
+.catalog-toolbar {
+  flex-shrink: 0;
+}
+
 .catalog-shell {
-  height: calc(100dvh - 220px);
+  flex: 1;
 }
 
 .menu-group {
