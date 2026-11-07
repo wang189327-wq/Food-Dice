@@ -19,7 +19,7 @@ ET.register_namespace('android', ANDROID[1:-1])
 
 def find_toolchain():
     sdk = os.environ.get('MENU_TOOLCHAIN') or os.environ.get('ANDROID_HOME') or os.environ.get('ANDROID_SDK_ROOT')
-    candidates = [Path(sdk)] if sdk else [ROOT.parent / '离线构建资源/toolchain', ROOT.parent / 'settings-update/toolchain']
+    candidates = [Path(sdk)] if sdk else [ROOT / 'delivery/离线构建资源/toolchain', ROOT.parent / '离线构建资源/toolchain', ROOT.parent / 'settings-update/toolchain']
     tools = next((p for p in candidates if p.is_dir()), None)
     if tools is None:
         raise FileNotFoundError('Set ANDROID_HOME (standard SDK) or MENU_TOOLCHAIN (offline tools)')
@@ -63,7 +63,7 @@ def build(debug=False, public_assets=False):
                  '-dname', 'CN=Android Debug,O=Android,C=US', '-storepass:env', 'MENU_SIGN_PASSWORD'])
     else:
         configured = os.environ.get('MENU_SIGN_DIR')
-        candidates = [Path(configured)] if configured else [ROOT.parent / '离线构建资源/签名资料', ROOT.parent / 'local-menu/offline-signing']
+        candidates = [Path(configured)] if configured else [ROOT / 'delivery/离线构建资源/签名资料', ROOT.parent / '离线构建资源/签名资料', ROOT.parent / 'local-menu/offline-signing']
         signing = next((p for p in candidates if p.is_dir()), None)
         if not signing:
             raise FileNotFoundError('Release requires the original signing key; use --debug for your own build')
@@ -150,11 +150,10 @@ def build(debug=False, public_assets=False):
         digest = hashlib.sha256(signed.read_bytes()).hexdigest()
         (delivery / (output_name + '.sha256')).write_text(digest + '  ' + output_name + '\n', encoding='utf-8')
         if not debug:
-            publish = ROOT / 'netlify-publish'
+            publish = delivery
             publish.mkdir(exist_ok=True)
             remote_name = f'menu-{VERSION["name"]}{flavor}.apk'
-            shutil.copy2(signed, publish / remote_name)
-            (publish / 'update.json').write_text(json.dumps({'versionCode': VERSION['code'], 'versionName': VERSION['name'],
+            (publish / ('update-public.json' if public_assets else 'update-local.json')).write_text(json.dumps({'versionCode': VERSION['code'], 'versionName': VERSION['name'],
                 'apkUrl': VERSION.get('releaseAssetBaseUrl', VERSION['updateBaseUrl']) + '/' + remote_name, 'sha256': digest,
                 'notes': VERSION['notes']}, ensure_ascii=False, indent=2), encoding='utf-8')
         print('APK_READY', ascii(output_name), digest)

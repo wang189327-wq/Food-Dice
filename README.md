@@ -18,7 +18,7 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 
 ## 下载
 
-到 [Releases](https://github.com/wang189327-wq/meiwei-menu/releases) 下载正式公开版APK。公开版使用原创占位图；可以在应用中添加自己的菜品照片。原签名保持不变，正常覆盖安装保留数据。卸载前请导出备份。
+到 [Releases](https://github.com/wang189327-wq/meiwei-menu/releases) 下载正式公开版APK。公开版使用原创占位图；可以在应用中添加自己的菜品照片。当前版本为 **1.0（版本码1）**，原签名保持不变。编号已从早期1.4（10401）重置；已安装高版本码的设备需要先导出备份、卸载旧版，再安装本版并恢复备份。后续版本递增后可正常覆盖升级。
 
 ## 在浏览器中开发
 
@@ -49,6 +49,8 @@ python build-android.py --debug --public-assets
 开发版使用独立包名 `cn.localmenu.app.debug` 和本机生成的调试密钥，可与正式版共存，不需要维护者私钥。APK位于 `delivery/`。CI同样构建开发版。
 
 正式版仅由维护者使用原密钥生成：设置 `MENU_SIGN_DIR` 指向含 `menu-release.p12` 与 `password.txt` 的私密目录，再运行 `python build-android.py --public-assets`。密钥永不提交。本项目也兼容历史离线工具目录，可用 `MENU_TOOLCHAIN` 指定。
+
+本地维护者的离线工具和签名可集中存放于 `delivery/离线构建资源/`（不提交Git），构建脚本自动查找。
 
 版本修改集中在 `version.json`。公开正式版检查GitHub上的更新清单，下载后校验SHA-256、包名、版本和证书；安卓仍要求用户确认安装。
 

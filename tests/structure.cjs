@@ -40,8 +40,8 @@ assert(!moduleExports.get('store.js').has('storageBroken'));
 assert(!moduleExports.get('catalog.js').has('detailId'));
 assert(!moduleExports.get('draw.js').has('chosen'));
 const version = JSON.parse(fs.readFileSync(path.join(root, 'version.json'), 'utf8'));
-assert.equal(version.code, 10401);
-assert.equal(version.name, '1.4');
+assert.equal(version.code, 1);
+assert.equal(version.name, '1.0');
 const router = fs.readFileSync(path.join(root, 'android/src/cn/localmenu/app/LocalWebClient.java'), 'utf8');
 for (const file of files)
   assert(router.includes(file.slice(0, -3)));

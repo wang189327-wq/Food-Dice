@@ -1,9 +1,9 @@
 {
-  "name": "1.4",
-  "code": 10401,
+  "name": "1.0",
+  "code": 1,
   "minimumSdk": 29,
   "targetSdk": 35,
   "updateBaseUrl": "https://raw.githubusercontent.com/wang189327-wq/meiwei-menu/main/releases",
-  "notes": "ES模块隔离状态、精简详情渲染、可复现开发构建及开源文档；本地数据保持兼容。",
-  "releaseAssetBaseUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.4.0"
+  "notes": "版本编号重置为1.0（版本码1），保留离线菜谱、计划、抽签和备份功能。",
+  "releaseAssetBaseUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.0.0"
 }
