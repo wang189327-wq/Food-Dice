@@ -84,49 +84,56 @@ python build-android.py --debug --public-assets
 
 ```text
 Food-Dice/
-├── android/
-│   ├── AndroidManifest.xml        # 应用清单：包名、权限、最低 API
-│   ├── assets/                    # WebView 加载的网页应用（与在线试运行同一份代码）
-│   │   ├── index.html             # 单页面入口
-│   │   ├── css/app.css            # 全部样式
-│   │   ├── js/                    # 14 个原生 ES modules，无框架、无打包器
-│   │   └── photos/                # 预置配图：菜品、餐厅示意图与 SVG 占位图
-│   ├── res/                       # 图标、主题等 Android 资源
-│   └── src/cn/localmenu/app/      # Java 外壳：生命周期、资源路由、存储桥、更新
-├── docs/
-│   ├── architecture.md            # 架构说明与设计约束
-│   ├── IMAGE_CREDITS.md           # 图片作者、来源、许可与 SHA-256
-│   ├── image-attributions.json    # 机器可读的图片许可清单（唯一维护入口）
-│   ├── assets.md                  # 素材说明
-│   ├── public-catalog-changes.md  # 公开版菜品增删记录
-│   └── screenshots/               # README 截图与功能演示动图
-├── releases/
-│   └── update.json                # 自更新清单：版本、下载地址、SHA-256
-├── scripts/
-│   ├── capture-demo.mjs           # 用 Playwright 采集演示动图各帧
-│   ├── build-demo-gif.py          # 合成带步骤标注的动图
-│   └── sync-image-credits.py      # 由许可清单生成署名页与 Markdown
-├── tests/                         # 五组 Playwright 测试：行为、结构、生产、资源、原生存储
-├── build-android.py               # 免 Gradle 构建：aapt2 → javac → d8 → zipalign → apksigner
-├── version.json                   # 版本号与版本码的唯一修改入口
-├── package.json                   # 仅两个开发依赖：playwright、acorn
-├── CONTRIBUTING.md
-└── README.md
+├── android/                          # Java 外壳 + WebView 网页应用
+│   ├── AndroidManifest.xml           # 包名、权限与最低 API
+│   ├── assets/                       # WebView 加载的网页应用（与在线试运行同一份代码）
+│   │   ├── index.html                # 单页面入口
+│   │   ├── css/app.css               # 全部样式
+│   │   ├── js/                       # 14 个原生 ES modules，无框架、无打包器
+│   │   │   ├── app.js                # 启动、渲染订阅和返回键；业务状态不挂 window
+│   │   │   ├── store.js              # 唯一数据写入入口：校验、失败回滚、订阅；保留历史备份格式
+│   │   │   ├── seed-data.js          # 预置菜谱、餐厅与做法
+│   │   │   ├── catalog.js            # 菜单与详情交互
+│   │   │   ├── catalog-view.js       # 菜单与详情的显示模板
+│   │   │   ├── planner.js            # 用餐计划：按日期安排午晚餐，按重量或份数统计营养
+│   │   │   ├── draw.js               # 随机抽签：在指定分类或外卖记录中抽一道加入计划
+│   │   │   ├── takeout.js            # 外卖记录：店铺、图片与搜索
+│   │   │   ├── photos.js             # 照片选择与正方形裁剪
+│   │   │   ├── settings.js           # 设置页：备份导出/恢复、更新状态、署名入口
+│   │   │   ├── asset-credits.js      # 图片作者与许可清单（由 image-attributions.json 生成）
+│   │   │   ├── version.js            # 版本号与内置图片白名单
+│   │   │   ├── data.js               # 公共显示工具
+│   │   │   └── validation.js         # 字段校验
+│   │   └── photos/                   # 预置配图：菜品、餐厅示意图与 SVG 占位图
+│   ├── res/                          # 图标、主题等 Android 资源
+│   └── src/cn/localmenu/app/         # Java 外壳，只管壳层职责
+│       ├── MainActivity.java         # 生命周期、WebView 配置、返回键与存储桥
+│       ├── LocalWebClient.java       # 白名单资源路由，不把任意路径映射进 WebView
+│       ├── AppUpdater.java           # 下载更新包，校验 SHA-256、包名、版本与证书
+│       ├── UpdateProvider.java       # 只读 ContentProvider，把 APK 交给系统安装器
+│       └── Streams.java              # 流拷贝工具
+├── docs/                             # 架构、许可与截图
+│   ├── architecture.md               # 架构说明与设计约束
+│   ├── IMAGE_CREDITS.md              # 图片作者、来源、许可与 SHA-256
+│   ├── image-attributions.json       # 机器可读的图片许可清单（唯一维护入口）
+│   ├── assets.md                     # 素材说明
+│   ├── public-catalog-changes.md     # 公开版菜品增删记录
+│   └── screenshots/                  # README 截图与功能演示动图
+├── releases/                         # 自更新清单所在目录
+│   └── update.json                   # 版本、下载地址、SHA-256
+├── scripts/                          # 演示动图与图片清单的维护脚本
+│   ├── capture-demo.mjs              # 用 Playwright 采集演示动图各帧
+│   ├── build-demo-gif.py             # 合成带步骤标注的动图
+│   └── sync-image-credits.py         # 由许可清单生成署名页与 Markdown
+├── tests/                            # 五组 Playwright 测试：行为、结构、生产、资源、原生存储
+├── build-android.py                  # 免 Gradle 构建：aapt2 → javac → d8 → zipalign → apksigner
+├── version.json                      # 版本号与版本码的唯一修改入口
+├── package.json                      # 仅两个开发依赖：playwright、acorn
+├── CONTRIBUTING.md                   # 贡献指南
+└── README.md                         # 你正在看的文件
 ```
 
-关键文件职责：
-
-| 路径 | 职责 |
-| :--- | :--- |
-| `android/src/cn/localmenu/app/` | Android生命周期、存储桥、白名单资源路由和更新安装 |
-| `android/assets/js/seed-data.js` | 预置菜谱、餐厅和做法 |
-| `store.js` | 唯一的数据写入入口、验证、失败回滚和订阅；保留历史备份格式 |
-| `catalog.js` / `catalog-view.js` | 菜单和详情交互 / 显示模板 |
-| `planner.js`、`draw.js`、`takeout.js`、`photos.js` | 各自的业务功能 |
-| `data.js`、`validation.js` | 公共显示工具和字段校验 |
-| `app.js` | 启动、渲染订阅和返回键；不把业务状态挂在 `window` 上 |
-
-详见 [架构说明](docs/architecture.md) 和 [贡献指南](CONTRIBUTING.md)。
+设计约束见 [架构说明](docs/architecture.md)，参与方式见 [贡献指南](CONTRIBUTING.md)。
 
 ## 图片与隐私
 
