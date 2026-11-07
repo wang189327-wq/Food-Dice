@@ -53,25 +53,27 @@ await page.evaluate(() => window.scrollBy(0, 46));
 await page.waitForTimeout(700);
 await shot('4-plan');
 
-// 随机抽签：连拍 3 帧捕捉摇动过程
+// 随机抽签：顶部 → 逐帧向下滚动，展示完整页面
 await page.click('nav button[data-tab="draw"]');
 await page.waitForTimeout(400);
 await page.click('#selectAll');
 await page.waitForTimeout(200);
 await page.click('#drawButton');
-await page.waitForTimeout(130);
-await shot('5a-draw-spin');
-await page.waitForTimeout(160);
-await shot('5b-draw-spin');
-await page.waitForTimeout(1400);
+await page.waitForTimeout(1500);
 await waitImgs();
-await page.evaluate(() => {
-  const el = document.querySelector('#drawResult');
-  el && el.scrollIntoView({ block: 'center' });
-});
-await page.waitForTimeout(500);
+await page.evaluate(() => window.scrollTo(0, 0));
+await page.waitForTimeout(400);
 await waitImgs();
-await shot('6-draw-result');
+await shot('5-draw-top');
+
+const maxY = await page.evaluate(() => Math.max(0, document.documentElement.scrollHeight - window.innerHeight));
+console.log('draw page scroll range:', maxY);
+const steps = 6;
+for (let i = 1; i <= steps; i++) {
+  await page.evaluate(y => window.scrollTo(0, y), Math.round(maxY * i / steps));
+  await page.waitForTimeout(110);
+  await shot(`5-draw-scroll-${i}`);
+}
 
 // 外卖
 await page.click('nav button[data-tab="takeout"]');

@@ -16,9 +16,13 @@ frames = [
     ('2-category.png', '② 按分类筛选', 950),
     ('3-detail.png', '③ 做法与营养', 1300),
     ('4-plan.png', '④ 安排午晚餐', 1200),
-    ('6-draw-result.png', '⑤ 随机抽签', 1450),
-    ('7-takeout.png', '⑥ 外卖记录', 1200),
+    ('5-draw-top.png', '⑤ 随机抽签', 700),
 ]
+# 抽签页向下滚动：中间帧短时长形成滑动感，末帧停留供阅读
+for i in range(1, 6):
+    frames.append((f'5-draw-scroll-{i}.png', '⑤ 随机抽签', 110))
+frames.append(('5-draw-scroll-6.png', '⑤ 随机抽签', 1600))
+frames.append(('7-takeout.png', '⑥ 外卖记录', 1200))
 
 font = ImageFont.truetype(FONT, 19)
 images = []
