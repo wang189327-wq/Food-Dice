@@ -2,6 +2,6 @@
   "versionCode": 2,
   "versionName": "1.0.1",
   "apkUrl": "https://github.com/wang189327-wq/Food-Dice/releases/download/v1.0.1/menu-1.0.1-public.apk",
-  "sha256": "91fa7bc057be3a74ad699f404e096ae1373040d6d5b238120c972086c818b9b5",
-  "notes": "1.0.1：仓库更名为 Food-Dice，更新地址与图片来源链接同步迁移；浏览器版配图改用相对路径。功能与 1.0 一致。"
+  "sha256": "c34ff3d37949368e37c43e65dd73951762d0b2647b2acdccb08f5100e7cd8dc2",
+  "notes": "1.0.1：仓库更名为 Food-Dice，更新地址与来源链接同步迁移；修复旧更新地址不迁移、备份体积无上限、下载无总时限且不可取消等问题。"
 }
