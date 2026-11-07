@@ -1,7 +1,7 @@
 {
-  "versionCode": 1,
-  "versionName": "1.0",
-  "apkUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.0.0/menu-1.0-public.apk",
-  "sha256": "1467dbacde66716a721e6450fd8b709e9780eeeca0184cc2220b480305d857dd",
-  "notes": "开源最终版：70道预置菜、18家店铺示意图，全部配图附开放许可来源；个人完整版保留110道菜。"
+  "versionCode": 2,
+  "versionName": "1.0.1",
+  "apkUrl": "https://github.com/wang189327-wq/Food-Dice/releases/download/v1.0.1/menu-1.0.1-public.apk",
+  "sha256": "91fa7bc057be3a74ad699f404e096ae1373040d6d5b238120c972086c818b9b5",
+  "notes": "1.0.1：仓库更名为 Food-Dice，更新地址与图片来源链接同步迁移；浏览器版配图改用相对路径。功能与 1.0 一致。"
 }
