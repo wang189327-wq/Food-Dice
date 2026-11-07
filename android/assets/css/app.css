@@ -97,8 +97,10 @@ button:disabled {
 nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  right: auto;
+  width: calc(100% * 2 / 3);
+  transform: translateX(-50%);
   border-top: 1px solid #dce5da;
   display: flex;
   justify-content: center;
@@ -111,7 +113,7 @@ nav button {
   color: #718477;
   flex: 1;
   max-width: 180px;
-  padding: 8px 3px;
+  padding: 8px 1px;
 }
 
 nav button.active {
@@ -411,7 +413,8 @@ h2 {
 }
 
 nav button {
-  font-size: 12px;
+  font-size: clamp(9px, 2.6vw, 12px);
+  white-space: nowrap;
   min-width: 0;
 }
 
