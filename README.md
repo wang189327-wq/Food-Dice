@@ -80,7 +80,41 @@ python build-android.py --debug --public-assets
 
 版本修改集中在 `version.json`。公开正式版检查GitHub上的更新清单，下载后校验SHA-256、包名、版本和证书；安卓仍要求用户确认安装。
 
-## 代码结构
+## 目录结构
+
+```text
+Food-Dice/
+├── android/
+│   ├── AndroidManifest.xml        # 应用清单：包名、权限、最低 API
+│   ├── assets/                    # WebView 加载的网页应用（与在线试运行同一份代码）
+│   │   ├── index.html             # 单页面入口
+│   │   ├── css/app.css            # 全部样式
+│   │   ├── js/                    # 14 个原生 ES modules，无框架、无打包器
+│   │   └── photos/                # 预置配图：菜品、餐厅示意图与 SVG 占位图
+│   ├── res/                       # 图标、主题等 Android 资源
+│   └── src/cn/localmenu/app/      # Java 外壳：生命周期、资源路由、存储桥、更新
+├── docs/
+│   ├── architecture.md            # 架构说明与设计约束
+│   ├── IMAGE_CREDITS.md           # 图片作者、来源、许可与 SHA-256
+│   ├── image-attributions.json    # 机器可读的图片许可清单（唯一维护入口）
+│   ├── assets.md                  # 素材说明
+│   ├── public-catalog-changes.md  # 公开版菜品增删记录
+│   └── screenshots/               # README 截图与功能演示动图
+├── releases/
+│   └── update.json                # 自更新清单：版本、下载地址、SHA-256
+├── scripts/
+│   ├── capture-demo.mjs           # 用 Playwright 采集演示动图各帧
+│   ├── build-demo-gif.py          # 合成带步骤标注的动图
+│   └── sync-image-credits.py      # 由许可清单生成署名页与 Markdown
+├── tests/                         # 五组 Playwright 测试：行为、结构、生产、资源、原生存储
+├── build-android.py               # 免 Gradle 构建：aapt2 → javac → d8 → zipalign → apksigner
+├── version.json                   # 版本号与版本码的唯一修改入口
+├── package.json                   # 仅两个开发依赖：playwright、acorn
+├── CONTRIBUTING.md
+└── README.md
+```
+
+关键文件职责：
 
 | 路径 | 职责 |
 | :--- | :--- |
