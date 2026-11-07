@@ -1,9 +1,19 @@
 import { PHOTO_CREDITS } from './asset-credits.js';
 import { $, esc, toast } from './data.js';
 import { data, restoreBackup } from './store.js';
-import { validate } from './validation.js';
+import { validate, MAX_BACKUP_CHARS } from './validation.js';
 
-window.updateStatus = s => $('updateStatus').textContent = s;
+let downloading = false;
+const setDownload = on => {
+  downloading = on;
+  $('installUpdate').textContent = on ? '取消下载' : '下载并安装新版本';
+};
+// 下载过程由原生提示驱动，收到终态消息后恢复按钮
+window.updateStatus = s => {
+  $('updateStatus').textContent = s;
+  if (!/正在下载安装包|正在取消下载/.test(s))
+    setDownload(false);
+};
 $('updateUrl').value = window.Native ? Native.updateUrl() : localStorage.getItem('menu-update-url') || '';
 $('checkUpdate').onclick = () => {
   const u = $('updateUrl').value.trim();
@@ -22,7 +32,24 @@ $('checkUpdate').onclick = () => {
     updateStatus('请在安卓应用内检测和安装更新');
   }
 };
-$('installUpdate').onclick = () => window.Native ? Native.install() : toast('请在安卓应用中使用更新功能');
+$('resetUpdateUrl').onclick = () => {
+  if (window.Native) {
+    Native.resetUpdateUrl();
+    $('updateUrl').value = Native.updateUrl();
+  } else {
+    localStorage.removeItem('menu-update-url');
+    $('updateUrl').value = '';
+  }
+  toast('已恢复默认更新地址');
+};
+$('installUpdate').onclick = () => {
+  if (!window.Native)
+    return toast('请在安卓应用中使用更新功能');
+  if (downloading)
+    return Native.cancelInstall();
+  setDownload(true);
+  Native.install();
+};
 $('export').onclick = () => {
   $('backup').value = JSON.stringify(data, null, 2);
   toast('备份已生成，请复制保存');
@@ -40,8 +67,12 @@ $('copyBackup').onclick = async () => {
   }
 };
 $('restore').onclick = () => {
+  const text = $('backup').value;
+  // 先按文字长度拦一次，避免把超大内容交给 JSON.parse
+  if (text.length > MAX_BACKUP_CHARS)
+    return toast('备份文字过大，请确认内容完整');
   try {
-    const x = validate(JSON.parse($('backup').value));
+    const x = validate(JSON.parse(text));
     if (confirm('恢复将替换当前全部菜谱和计划，确定继续？')) {
       if (restoreBackup(x)) toast('备份已恢复');
     }

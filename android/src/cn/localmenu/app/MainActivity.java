@@ -94,6 +94,7 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public String updateUrl() { return updater.getUrl(); }
         @JavascriptInterface public void setUpdateUrl(String value) { updater.setUrl(value); }
+        @JavascriptInterface public void resetUpdateUrl() { updater.resetUrl(); }
         @JavascriptInterface public void openImageCredit(String value) {
             Uri uri = Uri.parse(value);
             String host = uri.getHost();
@@ -112,6 +113,7 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void check() { updater.check(); }
         @JavascriptInterface public void install() { updater.install(); }
+        @JavascriptInterface public void cancelInstall() { updater.cancelInstall(); }
     }
 
     @Override protected void onActivityResult(int request, int result, Intent intent) {

@@ -1,5 +1,8 @@
 import { dateString } from './data.js';
 
+// 图片合计上限 8M 字符，约合 200 道带图菜品，正常备份远低于此
+const MAX_BACKUP_CHARS = 12000000, MAX_IMAGE_CHARS = 8000000;
+
 function optionalNumber(n, max) {
   return n === null || n === undefined || Number.isFinite(n) && n >= 0 && n <= max;
 }
@@ -11,9 +14,15 @@ function validate(x) {
   if (x.categories.some(c => typeof c !== 'string' || !c.trim() || c.length > 24) || new Set(x.categories).size !== x.categories.length)
     throw Error('分类无效');
   const ids = new Set(), takeoutIds = new Set();
+  let imageChars = 0;
   for (const d of x.dishes) {
     if (!d || typeof d.id !== 'string' || ids.has(d.id) || typeof d.name !== 'string' || !d.name.trim() || d.name.length > 60 || !x.categories.includes(d.category) || !optionalNumber(d.calories, 10000) || !optionalNumber(d.fiber, 100) || d.image && !validImage(d.image) || d.recipe !== undefined && (typeof d.recipe !== 'string' || d.recipe.length > 12000))
       throw Error('菜品数据无效');
+    if (d.image) {
+      imageChars += d.image.length;
+      if (imageChars > MAX_IMAGE_CHARS)
+        throw Error('备份图片总量过大');
+    }
     ids.add(d.id);
   }
   if (x.takeouts !== undefined) {
@@ -22,6 +31,11 @@ function validate(x) {
     for (const t of x.takeouts) {
       if (!t || typeof t.id !== 'string' || takeoutIds.has(t.id) || typeof t.shop !== 'string' || typeof t.dish !== 'string' || !(t.shop.trim() || t.dish.trim()) || t.shop.length > 60 || t.dish.length > 80 || !optionalNumber(t.price, 99999) || !optionalNumber(t.calories, 10000) || t.image && !validImage(t.image))
         throw Error('外卖数据无效');
+      if (t.image) {
+        imageChars += t.image.length;
+        if (imageChars > MAX_IMAGE_CHARS)
+          throw Error('备份图片总量过大');
+      }
       takeoutIds.add(t.id);
     }
   }
@@ -51,4 +65,4 @@ function validImage(v) {
   return typeof v === 'string' && v.length < 210000 && (/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v) || /^https:\/\/menu\.local\/photos\/(?:preset-20261020-\d{3}|staple-20261020-\d{2}|store-20261020-\d{2})\.jpg$/.test(v));
 }
 
-export { optionalNumber, validImage, validate };
+export { MAX_BACKUP_CHARS, optionalNumber, validImage, validate };

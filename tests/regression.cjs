@@ -75,6 +75,12 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
     });
     assert.equal(pics.length, 89);
     assert(pics.every(Boolean));
+    const repeated = await page.evaluate(() => {
+      const once = displayImage(PRESET_DISHES[0].image);
+      return {once, twice: displayImage(once), missing: displayImage('https://menu.local/photos/not-bundled.jpg')};
+    });
+    assert.equal(repeated.twice, repeated.once);
+    assert.equal(repeated.missing, 'photos/placeholder.svg');
     await page.screenshot({ path: root + '/菜谱预览.png' });
     await page.locator('#categorySidebar button').filter({ hasText: '主食' }).click();
     await page.waitForTimeout(650);
@@ -247,6 +253,7 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
         '含空值及外卖的备份恢复',
         '旧数据和计划无损补充且不重复',
         '图片与缺图占位回退加载',
+        '图片地址重复处理不退化',
         '320px无横向溢出'
       ],
       androidStatusBarImplementation: 'native explicit edge-to-edge + systemBars/displayCutout/IME once; no extra minimum/gap',

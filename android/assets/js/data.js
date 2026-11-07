@@ -33,7 +33,7 @@ function displayImage(src) {
   if (!src || src.startsWith('data:')) return src;
   const local = toLocalPhoto(src);
   if (!APP_VERSION.bundledPhotos) return local;
-  const filename = src.startsWith('https://menu.local/photos/') ? src.split('/').pop() : null;
+  const filename = local.startsWith('photos/') ? local.slice(7) : null;
   return filename && APP_VERSION.bundledPhotos.includes(filename)
     ? local : 'photos/placeholder.svg';
 }

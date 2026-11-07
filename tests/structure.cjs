@@ -42,6 +42,7 @@ assert(!moduleExports.get('draw.js').has('chosen'));
 const version = JSON.parse(fs.readFileSync(path.join(root, 'version.json'), 'utf8'));
 assert.equal(version.code, 2);
 assert.equal(version.name, '1.0.1');
+assert.equal(JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version, version.name);
 const router = fs.readFileSync(path.join(root, 'android/src/cn/localmenu/app/LocalWebClient.java'), 'utf8');
 for (const file of files)
   assert(router.includes(file.slice(0, -3)));

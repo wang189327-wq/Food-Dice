@@ -25,8 +25,13 @@ final class AppUpdater {
     private final SharedPreferences preferences;
     private final Status status;
     private final AtomicBoolean busy = new AtomicBoolean(false);
+    private final AtomicBoolean cancelled = new AtomicBoolean(false);
     private volatile JSONObject latest;
     private boolean pendingInstall;
+    private static final long DOWNLOAD_LIMIT_MS = 180000;
+    private static final String[] LEGACY_URLS = {
+        "https://raw.githubusercontent.com/wang189327-wq/meiwei-menu/main/releases/update.json"
+    };
 
     AppUpdater(Activity activity, SharedPreferences preferences, Status status) {
         this.activity = activity;
@@ -39,8 +44,21 @@ final class AppUpdater {
         }
     }
 
-    String getUrl() { return preferences.getString("updateUrl", BuildInfo.UPDATE_URL); }
-    void setUrl(String value) { preferences.edit().putString("updateUrl", value.trim()).apply(); latest = null; }
+    String getUrl() {
+        String saved = preferences.getString("updateUrl", "").trim();
+        for (String legacy : LEGACY_URLS)
+            if (legacy.equalsIgnoreCase(saved)) return BuildInfo.UPDATE_URL;
+        return saved.isEmpty() ? BuildInfo.UPDATE_URL : saved;
+    }
+    void setUrl(String value) {
+        String url = value.trim();
+        for (String legacy : LEGACY_URLS)
+            if (legacy.equalsIgnoreCase(url)) url = BuildInfo.UPDATE_URL;
+        preferences.edit().putString("updateUrl", url).apply();
+        latest = null;
+    }
+    void resetUrl() { preferences.edit().remove("updateUrl").apply(); latest = null; }
+    void cancelInstall() { if (busy.get()) cancelled.set(true); }
     private File cached(String name) { return new File(activity.getCacheDir(), name); }
 
     private static HttpURLConnection connect(String address) throws Exception {
@@ -95,6 +113,7 @@ final class AppUpdater {
         JSONObject manifest = latest;
         if (manifest == null) { busy.set(false); status.show("请先检测到新版本"); return; }
         status.show("正在下载安装包…");
+        cancelled.set(false);
         new Thread(() -> {
             File part = cached("update.part"), target = cached("update.apk");
             try {
@@ -104,8 +123,10 @@ final class AppUpdater {
                 try (InputStream input = connection.getInputStream(); FileOutputStream output = new FileOutputStream(part)) {
                     byte[] buffer = new byte[32768];
                     int length;
-                    long size = 0;
+                    long size = 0, limit = System.currentTimeMillis() + DOWNLOAD_LIMIT_MS;
                     while ((length = input.read(buffer)) != -1) {
+                        if (cancelled.get()) throw new IOException("已取消");
+                        if (System.currentTimeMillis() > limit) throw new IOException("下载超时，请稍后重试");
                         size += length;
                         if (size > 100L * 1024 * 1024) throw new IOException("安装包过大");
                         digest.update(buffer, 0, length);
@@ -125,8 +146,9 @@ final class AppUpdater {
                 if (!part.renameTo(target)) throw new IOException("无法保存安装包");
                 activity.runOnUiThread(this::launchInstall);
             } catch (Exception error) {
-                part.delete(); target.delete(); status.show("更新失败：" + error.getMessage());
-            } finally { busy.set(false); }
+                part.delete(); target.delete();
+                status.show(cancelled.get() ? "已取消下载" : "更新失败：" + error.getMessage());
+            } finally { cancelled.set(false); busy.set(false); }
         }, "menu-update-download").start();
     }
 
