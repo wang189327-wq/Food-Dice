@@ -18,7 +18,7 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 
 ## 下载
 
-到 [Releases](https://github.com/wang189327-wq/meiwei-menu/releases) 下载正式公开版APK。公开版已包含全部预置菜品与餐厅示意图，也可添加自己的菜品照片。当前版本为 **1.0（版本码1）**，原签名保持不变。编号已从早期1.4（10401）重置；已安装高版本码的设备需要先导出备份、卸载旧版，再安装本版并恢复备份。后续版本递增后可正常覆盖升级。
+到 [Releases](https://github.com/wang189327-wq/meiwei-menu/releases) 下载正式公开版APK。公开版已包含全部预置菜品与餐厅示意图，也可添加自己的菜品照片。当前版本为 **1.0（版本码1）**，原签名保持不变。后续版本递增后可正常覆盖升级。
 
 ## 在浏览器中开发
 
@@ -76,6 +76,6 @@ python build-android.py --debug --public-assets
 
 ## 项目状态
 
-这是个人项目的首个公开版本，已完成自动化行为测试和APK构建/签名检查；尚无完整实体安卓机型测试报告。欢迎提交手机型号、系统版本和可复现步骤，帮助补齐兼容性。
+这是个人项目的首个公开版本，已完成自动化行为测试和APK构建/签名检查，并由维护者在 vivo X100s Pro 手机与华为 MatePad 平板上完成实体机型自测。欢迎提交手机型号、系统版本和可复现步骤，帮助补齐兼容性。
 
 代码采用 [MIT](LICENSE) 许可。摄影图片各自遵循来源清单中的许可证，不统一改为MIT；截图含这些图片，按CC BY-SA 4.0提供。第三方依赖遵循各自许可证；见 [素材说明](docs/assets.md)。
