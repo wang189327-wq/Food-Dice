@@ -20,6 +20,11 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 | 🔍 详情与推荐 | 查看菜品详情和各分类随机推荐，裁剪正方形照片 |
 | 💾 备份 | 导出、恢复本机备份；新建记录允许只填名称 |
 
+<p align="center">
+  <img src="docs/screenshots/demo.gif" width="260" alt="功能演示：分类菜谱、做法与营养、安排午晚餐、随机抽签、外卖记录"/>
+</p>
+<p align="center"><sub>分类浏览 → 做法与营养 → 安排午晚餐 → 随机抽签 → 外卖记录</sub></p>
+
 公开版包含70道家常菜和18条餐厅名称示例，所有预置配图随源码提供，逐图来源与许可见 [图片清单](docs/IMAGE_CREDITS.md)。营养值为粗略估算，配方、用油、馅料和熟制含水量不同都会改变结果。
 
 ## 下载
