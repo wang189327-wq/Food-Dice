@@ -1,6 +1,7 @@
 :root {
   font-family: system-ui,sans-serif;
   font-size: 16px;
+  --navigation-height: calc(61px * 2 / 3);
 }
 
 * {
@@ -97,14 +98,13 @@ button:disabled {
 nav {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  right: auto;
-  width: calc(100% * 2 / 3);
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  height: calc(var(--navigation-height) + env(safe-area-inset-bottom));
   border-top: 1px solid #dce5da;
   display: flex;
   justify-content: center;
-  padding: 8px 6px max(8px,env(safe-area-inset-bottom));
+  padding: 0 6px env(safe-area-inset-bottom);
   z-index: 5;
 }
 
@@ -113,7 +113,10 @@ nav button {
   color: #718477;
   flex: 1;
   max-width: 180px;
-  padding: 8px 1px;
+  padding: 2px 3px;
+  min-height: 0;
+  height: 100%;
+  line-height: 15px;
 }
 
 nav button.active {
@@ -271,7 +274,7 @@ input[type=checkbox] {
 }
 
 body {
-  padding-bottom: 78px;
+  padding-bottom: calc(var(--navigation-height) + 17px + env(safe-area-inset-bottom));
 }
 
 main {
@@ -413,7 +416,7 @@ h2 {
 }
 
 nav button {
-  font-size: clamp(9px, 2.6vw, 12px);
+  font-size: 12px;
   white-space: nowrap;
   min-width: 0;
 }

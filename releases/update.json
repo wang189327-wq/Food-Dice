@@ -2,6 +2,6 @@
   "versionCode": 1,
   "versionName": "1.0",
   "apkUrl": "https://github.com/wang189327-wq/meiwei-menu/releases/download/v1.0.0/menu-1.0-public.apk",
-  "sha256": "eee73f66b70a2274255bdc2a5ee21aeba8e31f5409bd2a276af668ad9216cb68",
+  "sha256": "2245c9bf412a4582cdf9f2cbe61cced7fae4de52a7a37532db45810a120f06ef",
   "notes": "版本编号重置为1.0（版本码1），保留离线菜谱、计划、抽签和备份功能。"
 }
