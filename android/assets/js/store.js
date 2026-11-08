@@ -1,5 +1,5 @@
 import { EXTRA_DISHES, PRESET_DISHES, PRESET_RECIPES, PRESET_SHOPS, fresh, toast } from './data.js';
-import { validate } from './validation.js';
+import { MAX_BACKUP_CHARS, validate } from './validation.js';
 
 let data = fresh(), storageBroken = false;
 try {
@@ -10,18 +10,17 @@ try {
   storageBroken = true;
   setTimeout(() => alert('已有数据读取失败，已停止写入以保护原数据。请在设置中恢复有效备份。'), 100);
 }
-function save() {
+function save(text) {
   if (storageBroken) {
     toast('数据读取异常，请先恢复有效备份');
     return false;
   }
   try {
-    const s = JSON.stringify(data);
     if (window.Native) {
-      if (!Native.save(s))
+      if (!Native.save(text))
         throw Error('写入失败');
     } else
-      localStorage.setItem('menu-data', s);
+      localStorage.setItem('menu-data', text);
     return true;
   } catch (e) {
     toast('保存失败，请勿退出应用：' + e.message);
@@ -36,9 +35,15 @@ function subscribe(listener) {
 function commit(next) {
   try { validate(next); }
   catch (error) { toast('数据未保存：' + error.message); return false; }
+  // 与恢复入口共用同一上限，避免存得下却恢复不了
+  const text = JSON.stringify(next);
+  if (text.length > MAX_BACKUP_CHARS) {
+    toast('数据已超过备份上限，请先删除部分图片');
+    return false;
+  }
   const previous = data;
   data = next;
-  if (!save()) {
+  if (!save(text)) {
     data = previous;
     return false;
   }

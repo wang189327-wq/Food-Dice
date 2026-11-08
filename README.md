@@ -29,7 +29,7 @@ An offline-first Android recipe journal and meal planner, built with Java and na
 
 ## 下载
 
-到 [Releases](https://github.com/wang189327-wq/Food-Dice/releases) 下载正式公开版APK。公开版已包含全部预置菜品与餐厅示意图，也可添加自己的菜品照片。当前版本为 **1.0.1（版本码2）**，签名保持不变，已装 1.0 的设备可直接覆盖升级。
+到 [Releases](https://github.com/wang189327-wq/Food-Dice/releases) 下载正式公开版APK。公开版已包含全部预置菜品与餐厅示意图，也可添加自己的菜品照片。当前版本为 **1.0.2（版本码3）**，签名保持不变，已装 1.0 及 1.0.1 的设备可直接覆盖升级。
 
 | 项目 | 说明 |
 | :--- | :--- |
@@ -82,9 +82,15 @@ python build-android.py --debug --public-assets
 
 ### 可复现构建
 
-同源码重复构建的APK哈希不同：zip条目时间戳、对齐结果和签名块每次都有差异。这是已知限制，不影响安装，也不影响更新校验——更新比对的是发布清单里记录的SHA-256，不是"重新构建能否对上"。
+同一份源码重复构建，APK 的 SHA-256 通常不同。构建过程会写入 zip 条目时间戳，对齐和签名步骤还会重写归档结构；本项目没有做时间戳归一化，也没有验证过两次构建能否得到逐字节相同的文件。
 
-要确认某个APK出自本仓库，请看签名证书：证书SHA-256指纹固定为 `38F9C5A9CFAE9133981C084363FD3F001CA2ED9C8446A0F40B2A7E1CC2E8AF26`（`apksigner verify --print-certs` 可查），再与发布页的 `SHA256SUMS` 对照。
+三个层面要分开看，它们互相不能替代：
+
+- **文件完整性**：下载到的 APK 是否就是发布时的那一个文件。用发布页的 `SHA256SUMS` 或 `releases/update.json` 里的哈希核对。
+- **签名身份**：这个 APK 是否由本项目的签名密钥签署。证书 SHA-256 指纹固定为 `38F9C5A9CFAE9133981C084363FD3F001CA2ED9C8446A0F40B2A7E1CC2E8AF26`（`apksigner verify --print-certs` 可查）。
+- **源码对应关系**：这个 APK 是否由某份公开源码构建。前两项都证明不了这一点，本项目也没有提供可验证构建。
+
+也就是说，哈希和签名能排除"文件被替换"，但不能排除"发布者用别的代码构建了这个包"。需要确认后者时，只能逐项比对 APK 内 `assets/` 下的文件与仓库内容。
 
 ## 目录结构
 

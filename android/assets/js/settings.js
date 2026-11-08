@@ -51,8 +51,13 @@ $('installUpdate').onclick = () => {
   Native.install();
 };
 $('export').onclick = () => {
-  $('backup').value = JSON.stringify(data, null, 2);
-  toast('备份已生成，请复制保存');
+  const formatted = JSON.stringify(data, null, 2);
+  // 超限时改用紧凑格式，保证导出的备份一定能被恢复入口接受
+  const text = formatted.length > MAX_BACKUP_CHARS ? JSON.stringify(data) : formatted;
+  if (text.length > MAX_BACKUP_CHARS)
+    return toast('数据已超过备份上限，请先删除部分图片再导出');
+  $('backup').value = text;
+  toast(text === formatted ? '备份已生成，请复制保存' : '备份较长，已改用紧凑格式，请复制保存');
 };
 $('copyBackup').onclick = async () => {
   if (!$('backup').value)

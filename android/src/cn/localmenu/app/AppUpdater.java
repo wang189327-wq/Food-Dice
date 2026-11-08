@@ -27,8 +27,10 @@ final class AppUpdater {
     private final AtomicBoolean busy = new AtomicBoolean(false);
     private final AtomicBoolean cancelled = new AtomicBoolean(false);
     private volatile JSONObject latest;
+    private volatile HttpURLConnection transfer;
     private boolean pendingInstall;
     private static final long DOWNLOAD_LIMIT_MS = 180000;
+    private static final long CHECK_LIMIT_MS = 60000;
 
     AppUpdater(Activity activity, SharedPreferences preferences, Status status) {
         this.activity = activity;
@@ -50,19 +52,31 @@ final class AppUpdater {
         latest = null;
     }
     void resetUrl() { preferences.edit().remove("updateUrl").apply(); latest = null; }
-    void cancelInstall() { if (busy.get()) cancelled.set(true); }
+    void cancelInstall() {
+        if (!busy.get()) return;
+        cancelled.set(true);
+        HttpURLConnection connection = transfer;
+        if (connection != null) connection.disconnect();
+    }
     private File cached(String name) { return new File(activity.getCacheDir(), name); }
 
-    private static HttpURLConnection connect(String address) throws Exception {
+    private static void checkCancelled(boolean cancelled) throws IOException {
+        if (cancelled) throw new IOException("已取消");
+    }
+
+    private HttpURLConnection connect(String address, long deadline) throws Exception {
         URL url = new URL(address);
         for (int redirects = 0; redirects <= 5; redirects++) {
+            long left = deadline - System.currentTimeMillis();
+            if (left <= 0) throw new IOException("连接超时，请稍后重试");
             if (!"https".equals(url.getProtocol()) || url.getUserInfo() != null)
                 throw new IOException("仅支持 HTTPS 地址");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(15000);
-            connection.setReadTimeout(30000);
+            connection.setConnectTimeout((int) Math.min(15000, left));
+            connection.setReadTimeout((int) Math.min(30000, left));
             connection.setInstanceFollowRedirects(false);
             connection.setRequestProperty("Cache-Control", "no-cache");
+            transfer = connection;
             int statusCode = connection.getResponseCode();
             if (statusCode == 200) return connection;
             if (statusCode == 301 || statusCode == 302 || statusCode == 303 || statusCode == 307 || statusCode == 308) {
@@ -85,10 +99,10 @@ final class AppUpdater {
         status.show("正在检测更新…");
         new Thread(() -> {
             try {
-                HttpURLConnection connection = connect(getUrl());
+                HttpURLConnection connection = connect(getUrl(), System.currentTimeMillis() + CHECK_LIMIT_MS);
                 JSONObject manifest;
                 try { manifest = new JSONObject(new String(Streams.read(connection.getInputStream(), 65536), "UTF-8")); }
-                finally { connection.disconnect(); }
+                finally { connection.disconnect(); transfer = null; }
                 if (manifest.getLong("versionCode") <= BuildInfo.VERSION_CODE) { status.show("当前已是最新版本 " + BuildInfo.VERSION_NAME); return; }
                 if (!manifest.getString("sha256").matches("[a-fA-F0-9]{64}")) throw new IOException("更新清单校验值无效");
                 URL apk = new URL(manifest.getString("apkUrl"));
@@ -96,7 +110,7 @@ final class AppUpdater {
                 latest = manifest;
                 status.show("发现新版本 " + manifest.getString("versionName") + "。" + manifest.optString("notes", "") + " 点击下载安装。");
             } catch (Exception error) { status.show("检测失败：" + error.getMessage()); }
-            finally { busy.set(false); }
+            finally { transfer = null; busy.set(false); }
         }, "menu-update-check").start();
     }
 
@@ -109,22 +123,24 @@ final class AppUpdater {
         new Thread(() -> {
             File part = cached("update.part"), target = cached("update.apk");
             try {
+                long deadline = System.currentTimeMillis() + DOWNLOAD_LIMIT_MS;
                 target.delete();
-                HttpURLConnection connection = connect(manifest.getString("apkUrl"));
+                HttpURLConnection connection = connect(manifest.getString("apkUrl"), deadline);
                 MessageDigest digest = MessageDigest.getInstance("SHA-256");
                 try (InputStream input = connection.getInputStream(); FileOutputStream output = new FileOutputStream(part)) {
                     byte[] buffer = new byte[32768];
                     int length;
-                    long size = 0, limit = System.currentTimeMillis() + DOWNLOAD_LIMIT_MS;
+                    long size = 0;
                     while ((length = input.read(buffer)) != -1) {
-                        if (cancelled.get()) throw new IOException("已取消");
-                        if (System.currentTimeMillis() > limit) throw new IOException("下载超时，请稍后重试");
+                        checkCancelled(cancelled.get());
+                        if (System.currentTimeMillis() > deadline) throw new IOException("下载超时，请稍后重试");
                         size += length;
                         if (size > 100L * 1024 * 1024) throw new IOException("安装包过大");
                         digest.update(buffer, 0, length);
                         output.write(buffer, 0, length);
                     }
-                } finally { connection.disconnect(); }
+                } finally { connection.disconnect(); transfer = null; }
+                checkCancelled(cancelled.get());
                 StringBuilder hash = new StringBuilder();
                 for (byte value : digest.digest()) hash.append(String.format("%02x", value & 255));
                 if (!hash.toString().equalsIgnoreCase(manifest.getString("sha256"))) throw new IOException("SHA-256 校验失败");
@@ -135,16 +151,23 @@ final class AppUpdater {
                     || archive.getLongVersionCode() != manifest.getLong("versionCode")
                     || !Arrays.equals(archive.signingInfo.getApkContentsSigners(), own.signingInfo.getApkContentsSigners()))
                     throw new IOException("安装包包名、版本或签名不匹配");
+                checkCancelled(cancelled.get());
                 if (!part.renameTo(target)) throw new IOException("无法保存安装包");
                 activity.runOnUiThread(this::launchInstall);
             } catch (Exception error) {
                 part.delete(); target.delete();
                 status.show(cancelled.get() ? "已取消下载" : "更新失败：" + error.getMessage());
-            } finally { cancelled.set(false); busy.set(false); }
+            } finally { transfer = null; busy.set(false); }
         }, "menu-update-download").start();
     }
 
     private void launchInstall() {
+        // 下载末尾点了取消，可能已经走到改名之后，这里再确认一次
+        if (cancelled.get()) {
+            cached("update.apk").delete();
+            status.show("已取消下载");
+            return;
+        }
         try {
             if (!activity.getPackageManager().canRequestPackageInstalls()) {
                 pendingInstall = true;

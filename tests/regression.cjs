@@ -75,10 +75,13 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
     });
     assert.equal(pics.length, 89);
     assert(pics.every(Boolean));
-    const repeated = await page.evaluate(() => {
-      const once = displayImage(PRESET_DISHES[0].image);
+    const sample = await page.evaluate(() => PRESET_DISHES.find(d => d.image)?.image);
+    assert(sample, '预置数据中需要一个带图片的菜品作为样本');
+    const repeated = await page.evaluate(src => {
+      const once = displayImage(src);
       return {once, twice: displayImage(once), missing: displayImage('https://menu.local/photos/not-bundled.jpg')};
-    });
+    }, sample);
+    assert.equal(repeated.once, sample.replace('https://menu.local/', ''));
     assert.equal(repeated.twice, repeated.once);
     assert.equal(repeated.missing, 'photos/placeholder.svg');
     await page.screenshot({ path: root + '/菜谱预览.png' });
