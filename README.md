@@ -119,7 +119,7 @@ Food-Dice/
 │       ├── UpdateProvider.java       # 只读 ContentProvider，把 APK 交给系统安装器
 │       └── Streams.java              # 流拷贝工具
 ├── docs/                             # 架构、许可与截图
-│   ├── architecture.md               # 架构说明与设计约束
+│   ├── architecture.md               # 架构图、写入与更新流程
 │   ├── IMAGE_CREDITS.md              # 图片作者、来源、许可与 SHA-256
 │   ├── image-attributions.json       # 机器可读的图片许可清单（唯一维护入口）
 │   ├── assets.md                     # 素材说明
